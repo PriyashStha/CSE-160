@@ -17,124 +17,79 @@ class Vector3 {
         this.elements = v;
     }
 
-    /**
-     * Copy vector.
-     * @param src source vector
-     * @return this
-     */
     set(src) {
         var i, s, d;
-
         s = src.elements;
         d = this.elements;
-
-        if (s === d) {
-          return;
-        }
-
-        for (i = 0; i < 3; ++i) {
-          d[i] = s[i];
-        }
-
+        if (s === d) return;
+        for (i = 0; i < 3; ++i) d[i] = s[i];
         return this;
     }
 
-    /**
-      * Add other to this vector.
-      * @return this
-      */
     add(other) {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
+        this.elements[0] += other.elements[0];
+        this.elements[1] += other.elements[1];
+        this.elements[2] += other.elements[2];
         return this;
-    };
+    }
 
-    /**
-      * Subtract other from this vector.
-      * @return this
-      */
     sub(other) {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
+        this.elements[0] -= other.elements[0];
+        this.elements[1] -= other.elements[1];
+        this.elements[2] -= other.elements[2];
         return this;
-    };
+    }
 
-    /**
-      * Divide this vector by a scalar.
-      * @return this
-      */
-    div(scalar) {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
-        return this;
-    };
-
-    /**
-      * Multiply this vector by a scalar.
-      * @return this
-      */
     mul(scalar) {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
+        this.elements[0] *= scalar;
+        this.elements[1] *= scalar;
+        this.elements[2] *= scalar;
         return this;
-    };
+    }
 
-    /**
-      * Calcualte the dop product between this vector and other.
-      * @return scalar
-      */
+    div(scalar) {
+        this.elements[0] /= scalar;
+        this.elements[1] /= scalar;
+        this.elements[2] /= scalar;
+        return this;
+    }
+
+
     static dot(other1, other2) {
-        // Insert your code here.
-        let d = 0; // Modify this line to calculate this vector's magnitude.
-
-        // Don't delete the return statement.
+        let d = other1.elements[0] * other2.elements[0] +
+                other1.elements[1] * other2.elements[1] +
+                other1.elements[2] * other2.elements[2];
         return d;
     }
 
-    /**
-      * Calcualte the cross product between this vector and other.
-      * @return new vector
-      */
     static cross(other1, other2) {
-        // Insert your code here.
-        // This function should create and return a new vector.
-        let v3 = new Vector3(); // Modify this line to calculate cross product between other1 and other2.
-
-        // Don't delete the return statement.
-        return v3;
+        let a = other1.elements;
+        let b = other2.elements;
+        return new Vector3([
+            a[1]*b[2] - a[2]*b[1],
+            a[2]*b[0] - a[0]*b[2],
+            a[0]*b[1] - a[1]*b[0]
+        ]);
     }
 
-    /**
-      * Calculate the magnitude (or length) of this vector.
-      * @return scalar
-      */
-    magnitude() {
-        // Insert your code here.
-        let m = 0; // Modify this line to calculate this vector's magnitude.
+    // Calculate magnitude (length)
+magnitude() {
+    const x = this.elements[0];
+    const y = this.elements[1];
+    const z = this.elements[2];
+    return Math.sqrt(x*x + y*y + z*z);
+}
 
-        // Don't delete the return statement.
-        return m;
-    };
-
-    /**
-      * Normalize this vector.
-      * @return this
-      */
-    normalize() {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
-        return this;
-    };
+// Normalize this vector (make length = 1)
+normalize() {
+    const m = this.magnitude();
+    if (m > 0) {
+        this.elements[0] /= m;
+        this.elements[1] /= m;
+        this.elements[2] /= m;
+    }
+    return this;
+}
 }
 
 class Vector4 {
