@@ -3,15 +3,30 @@ class Triangle {
     this.position = [0, 0];
     this.color = [1, 1, 1];
     this.size = 10;
+    this.rotation = 0; // NEW
   }
 
   render() {
     let d = this.size / 200;
 
+    let cosB = Math.cos(this.rotation);
+    let sinB = Math.sin(this.rotation);
+
+    function rotate(x, y) {
+      return [
+        x * cosB - y * sinB,
+        x * sinB + y * cosB
+      ];
+    }
+
+    let p1 = rotate(0, d);
+    let p2 = rotate(-d, -d);
+    let p3 = rotate(d, -d);
+
     let vertices = new Float32Array([
-      this.position[0], this.position[1] + d,
-      this.position[0] - d, this.position[1] - d,
-      this.position[0] + d, this.position[1] - d
+      this.position[0] + p1[0], this.position[1] + p1[1],
+      this.position[0] + p2[0], this.position[1] + p2[1],
+      this.position[0] + p3[0], this.position[1] + p3[1]
     ]);
 
     let buffer = gl.createBuffer();

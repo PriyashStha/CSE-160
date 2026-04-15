@@ -5,12 +5,23 @@
 </head>
 
 <body>
+  <p>
+    Name: Priyash Shrestha
+    <br>
+    UCSC Email: pshrest5@ucsc.edu
+    <br>
+    Notes to Grader: The scene is of a night sky with moon, stars, and forest.
+    <br>
+  </p>
+
+  <img src="../images/drawing.jpeg" alt="Hand drawing" width="300">
   <canvas id="webgl" width="400" height="400"></canvas>
+  
 
   <br>
   <button onclick="clearCanvas()">Clear Canvas</button>
-  <br>
-  <br>
+  <button onclick="drawMyPicture()">Draw My Scene</button>
+  <br><br>
 
   <!-- Shape Buttons -->
   <b>Drawing Mode</b>
@@ -19,7 +30,6 @@
   <button onclick="setShape('triangle')">Triangle</button>
   <button onclick="setShape('circle')">Circle</button>
   
-
   <br><br>
 
   <!-- Sliders -->
@@ -32,12 +42,14 @@
   Size: <input type="range" min="5" max="40" id="size"><br>
   Segments: <input type="range" min="3" max="20" id="segments"><br>
 
-  <script src="lib/webgl-utils.js"></script>
-  <script src="lib/cuon-utils.js"></script>
 
-  <script src="src/Point.js"></script>
-  <script src="src/Triangle.js"></script>
-  <script src="src/Circle.js"></script>
-  <script src="src/asg1.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+
+  <script src="../src/Point.js"></script>
+  <script src="../src/Triangle.js"></script>
+  <script src="../src/Circle.js"></script>
+  <script src="../src/asg1.js"></script>
+  
 </body>
 </html>
