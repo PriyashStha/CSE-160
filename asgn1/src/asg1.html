@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Assignment 1</title>
+</head>
+
+<body>
+  <canvas id="webgl" width="400" height="400"></canvas>
+
+  <br>
+  <button onclick="clearCanvas()">Clear Canvas</button>
+  <br>
+  <br>
+
+  <!-- Shape Buttons -->
+  <b>Drawing Mode</b>
+  <br>
+  <button onclick="setShape('point')">Point</button>
+  <button onclick="setShape('triangle')">Triangle</button>
+  <button onclick="setShape('circle')">Circle</button>
+  
+
+  <br><br>
+
+  <!-- Sliders -->
+  <b>Shape Color:</b>
+  <br>
+  Red: <input type="range" min="0" max="1" step="0.01" id="red"><br>
+  Green: <input type="range" min="0" max="1" step="0.01" id="green"><br>
+  Blue: <input type="range" min="0" max="1" step="0.01" id="blue"><br>
+
+  Size: <input type="range" min="5" max="40" id="size"><br>
+  Segments: <input type="range" min="3" max="20" id="segments"><br>
+
+  <script src="lib/webgl-utils.js"></script>
+  <script src="lib/cuon-utils.js"></script>
+
+  <script src="src/Point.js"></script>
+  <script src="src/Triangle.js"></script>
+  <script src="src/Circle.js"></script>
+  <script src="src/asg1.js"></script>
+</body>
+</html>
