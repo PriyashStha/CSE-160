@@ -25,7 +25,6 @@ let gCube = null;
 function main() {
   canvas = document.getElementById('webgl');
   gl = canvas.getContext('webgl');
-
   if (!gl) return;
 
   initShaders();
@@ -38,7 +37,6 @@ function main() {
 
   setupUI();
 
-  // Mouse rotation
   canvas.onmousemove = function(ev) {
     if (ev.buttons === 1) {
       gMouseX = ev.clientX;
@@ -46,7 +44,6 @@ function main() {
     }
   };
 
-  // Poke animation
   canvas.onmousedown = function(ev) {
     if (ev.shiftKey) {
       gPoke = true;
@@ -126,7 +123,6 @@ function updateAnimationAngles() {
 function tick() {
   g_seconds = performance.now() / 1000.0;
 
-  // FPS
   let now = performance.now();
   let fps = 1000 / (now - g_lastFrameTime);
   g_lastFrameTime = now;
@@ -146,7 +142,7 @@ function renderCube(matrix, color) {
   gCube.render();
 }
 
-// ===== RENDER =====
+// ===== SCENE =====
 function renderScene() {
   gl.clearColor(0, 0, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -155,12 +151,12 @@ function renderScene() {
   globalRot.rotate(gAnimalGlobalRotation, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotation, false, globalRot.elements);
 
-  // BODY
+  // ===== BODY =====
   let body = new Matrix4();
   body.scale(0.6, 0.3, 0.3);
   renderCube(body, [0.6, 0.6, 0.6, 1]);
 
-  // HEAD
+  // ===== HEAD =====
   let head = new Matrix4(body);
   head.translate(0.75, 0.3, 0);
 
@@ -170,79 +166,132 @@ function renderScene() {
   headVisual.scale(0.5, 0.8, 0.5);
   renderCube(headVisual, [0.7, 0.7, 0.7, 1]);
 
-
-  // EYES (FIXED + EXAGGERATED OFFSET)
+  // ===== EYES =====
   let leftEye = new Matrix4(headBase);
-  leftEye.translate(0.25, 0.25, 0.35); 
-  leftEye.scale(0.1, 0.1, 0.1);         
-  renderCube(leftEye, [0.0, 0.0, 0.0, 1]);
+  leftEye.translate(0.25, 0.25, 0.35);
+  leftEye.scale(0.1, 0.1, 0.1);
+  renderCube(leftEye, [0, 0, 0, 1]);
 
   let rightEye = new Matrix4(headBase);
   rightEye.translate(0.25, 0.25, -0.35);
   rightEye.scale(0.1, 0.1, 0.1);
-  renderCube(rightEye, [0.0, 0.0, 0.0, 1]);
+  renderCube(rightEye, [0, 0, 0, 1]);
 
-    // ===== NOSE =====
+  // ===== NOSE =====
   let nose = new Matrix4(headBase);
-  nose.translate(0.28, 0.15, 0.0);
+  nose.translate(0.28, 0.15, 0);
   nose.scale(0.08, 0.08, 0.12);
   renderCube(nose, [0.2, 0.2, 0.2, 1]);
 
   // ===== FRONT LEG =====
   let thigh = new Matrix4();
   thigh.translate(0.3, -0.3, 0.2);
-  thigh.rotate(gThighAngle, 1, 0, 0);
+  thigh.rotate(gThighAngle, 0, 0, 1);
 
   let thighSave = new Matrix4(thigh);
-  thigh.scale(0.1, 0.3, 0.1);
-  renderCube(thigh, [0.8, 0.5, 0.5, 1]);
+  let thighModel = new Matrix4(thigh);
+  thighModel.scale(0.1, 0.3, 0.1);
+  renderCube(thighModel, [0.8, 0.5, 0.5, 1]);
 
   let calf = new Matrix4(thighSave);
   calf.translate(0, -0.3, 0);
-  calf.rotate(gCalfAngle, 1, 0, 0);
+  calf.rotate(gCalfAngle, 0, 0, 1);
 
   let calfSave = new Matrix4(calf);
-  calf.scale(0.1, 0.3, 0.1);
-  renderCube(calf, [0.8, 0.5, 0.5, 1]);
+  let calfModel = new Matrix4(calf);
+  calfModel.scale(0.1, 0.3, 0.1);
+  renderCube(calfModel, [0.8, 0.5, 0.5, 1]);
 
   let foot = new Matrix4(calfSave);
-  foot.translate(0, -0.3, 0);
-  foot.rotate(gFootAngle, 1, 0, 0);
+  foot.translate(0, -0.2, 0);
+  foot.rotate(gFootAngle, 0, 0, 1);
   foot.scale(0.15, 0.05, 0.2);
   renderCube(foot, [0.9, 0.4, 0.4, 1]);
 
   // ===== BACK LEG =====
   let thigh2 = new Matrix4();
   thigh2.translate(-0.3, -0.3, 0.2);
-  thigh2.rotate(gThighAngle, 1, 0, 0);
+  thigh2.rotate(gThighAngle, 0, 0, 1);
 
   let t2Save = new Matrix4(thigh2);
-  thigh2.scale(0.1, 0.3, 0.1);
-  renderCube(thigh2, [0.8, 0.5, 0.5, 1]);
+  let thigh2Model = new Matrix4(thigh2);
+  thigh2Model.scale(0.1, 0.3, 0.1);
+  renderCube(thigh2Model, [0.8, 0.5, 0.5, 1]);
 
   let calf2 = new Matrix4(t2Save);
   calf2.translate(0, -0.3, 0);
-  calf2.rotate(gCalfAngle, 1, 0, 0);
+  calf2.rotate(gCalfAngle, 0, 0, 1);
 
   let c2Save = new Matrix4(calf2);
-  calf2.scale(0.1, 0.3, 0.1);
-  renderCube(calf2, [0.8, 0.5, 0.5, 1]);
+  let calf2Model = new Matrix4(calf2);
+  calf2Model.scale(0.1, 0.3, 0.1);
+  renderCube(calf2Model, [0.8, 0.5, 0.5, 1]);
 
   let foot2 = new Matrix4(c2Save);
-  foot2.translate(0, -0.3, 0);
-  foot2.rotate(gFootAngle, 1, 0, 0);
+  foot2.translate(0, -0.2, 0);
+  foot2.rotate(gFootAngle, 0, 0, 1);
   foot2.scale(0.15, 0.05, 0.2);
   renderCube(foot2, [0.9, 0.4, 0.4, 1]);
 
+  // ===== FRONT RIGHT LEG =====
+  let thighR = new Matrix4();
+  thighR.translate(0.3, -0.3, -0.2);   // mirrored Z side
+  thighR.rotate(gThighAngle, 0, 0, 1);
+
+  let thighRSave = new Matrix4(thighR);
+  let thighRModel = new Matrix4(thighR);
+  thighRModel.scale(0.1, 0.3, 0.1);
+  renderCube(thighRModel, [0.8, 0.5, 0.5, 1]);
+
+  let calfR = new Matrix4(thighRSave);
+  calfR.translate(0, -0.3, 0);
+  calfR.rotate(gCalfAngle, 0, 0, 1);
+
+  let calfRSave = new Matrix4(calfR);
+  let calfRModel = new Matrix4(calfR);
+  calfRModel.scale(0.1, 0.3, 0.1);
+  renderCube(calfRModel, [0.8, 0.5, 0.5, 1]);
+
+  let footR = new Matrix4(calfRSave);
+  footR.translate(0, -0.2, 0);
+  footR.rotate(gFootAngle, 0, 0, 1);
+  footR.scale(0.15, 0.05, 0.2);
+  renderCube(footR, [0.9, 0.4, 0.4, 1]);
+
+    // ===== BACK RIGHT LEG =====
+  let thighR2 = new Matrix4();
+  thighR2.translate(-0.3, -0.3, -0.2);
+  thighR2.rotate(gThighAngle, 0, 0, 1);
+
+  let thighR2Save = new Matrix4(thighR2);
+  let thighR2Model = new Matrix4(thighR2);
+  thighR2Model.scale(0.1, 0.3, 0.1);
+  renderCube(thighR2Model, [0.8, 0.5, 0.5, 1]);
+
+  let calfR2 = new Matrix4(thighR2Save);
+  calfR2.translate(0, -0.3, 0);
+  calfR2.rotate(gCalfAngle, 0, 0, 1);
+
+  let calfR2Save = new Matrix4(calfR2);
+  let calfR2Model = new Matrix4(calfR2);
+  calfR2Model.scale(0.1, 0.3, 0.1);
+  renderCube(calfR2Model, [0.8, 0.5, 0.5, 1]);
+
+  let footR2 = new Matrix4(calfR2Save);
+  footR2.translate(0, -0.2, 0);
+  footR2.rotate(gFootAngle, 0, 0, 1);
+  footR2.scale(0.15, 0.05, 0.2);
+  renderCube(footR2, [0.9, 0.4, 0.4, 1]);
+
   // ===== TAIL =====
   let tail1 = new Matrix4();
-  tail1.translate(-0.5, 0, 0);
+  tail1.translate(-0.45, 0, 0);
   tail1.rotate(gTailAngle, 0, 0, 1);
 
   let t1Save = new Matrix4(tail1);
-  
-  tail1.scale(0.3, 0.05, 0.05);
-  renderCube(tail1, [0.5, 0.3, 0.3, 1]);
+  let tailModel = new Matrix4(tail1);
+  tailModel.scale(0.3, 0.05, 0.05);
+  renderCube(tailModel, [0.5, 0.3, 0.3, 1]);
 
   let tail2 = new Matrix4(t1Save);
   tail2.translate(-0.3, 0, 0);
