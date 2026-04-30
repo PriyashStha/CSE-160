@@ -7,45 +7,38 @@
 
 <body onload="main()">
 
-  <!-- CANVAS -->
   <canvas id="webgl" width="600" height="600"></canvas>
 
   <br><br>
 
-  <!-- PERFORMANCE (useful for later step) -->
   <div>
     <b>FPS:</b> <span id="fps">0</span>
   </div>
 
   <br>
 
-  <!-- REQUIRED CONTROLS -->
   <b>Global Rotation:</b><br>
-  <input type="range" min="0" max="360" value="0" id="rotSlider">
-  <br><br>
+  <input type="range" min="0" max="360" value="0" id="rotSlider"><br><br>
 
-  <b>Front Leg (Thigh):</b><br>
-  <input type="range" min="-60" max="60" value="0" id="thighSlider">
-  <br><br>
+  <b>Thigh:</b><br>
+  <input type="range" min="-60" max="60" value="0" id="thighSlider"><br><br>
 
-  <b>Front Leg (Calf):</b><br>
-  <input type="range" min="-60" max="60" value="0" id="calfSlider">
-  <br><br>
+  <b>Calf:</b><br>
+  <input type="range" min="-60" max="60" value="0" id="calfSlider"><br><br>
+
+  <b>Foot (3rd Joint):</b><br>
+  <input type="range" min="-45" max="45" value="0" id="footSlider"><br><br>
 
   <b>Tail:</b><br>
-  <input type="range" min="-45" max="45" value="0" id="tailSlider">
-  <br><br>
+  <input type="range" min="-45" max="45" value="0" id="tailSlider"><br><br>
 
-  <!-- ANIMATION BUTTON -->
   <button onclick="toggleAnimation()">Toggle Animation</button>
 
-  <br><br>
-
-  <!-- SCRIPTS -->
   <script src="../lib/webgl-utils.js"></script>
   <script src="../lib/webgl-debug.js"></script>
   <script src="../lib/cuon-utils.js"></script>
   <script src="../lib/cuon-matrix-cse160.js"></script>
+
   <script src="Cube.js"></script>
   <script src="asg2.js"></script>
 

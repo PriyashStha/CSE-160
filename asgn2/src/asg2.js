@@ -6,20 +6,27 @@ let u_ModelMatrix, u_GlobalRotation, u_Color;
 let gAnimalGlobalRotation = 0;
 let gThighAngle = 0;
 let gCalfAngle = 0;
+let gFootAngle = 0;
 let gTailAngle = 0;
 
 let gAnimate = false;
 let g_seconds = 0;
+
+let gMouseX = 0;
+let gPoke = false;
+
+// FPS
+let g_lastFrameTime = performance.now();
+
+// Performance: reuse cube
+let gCube = null;
 
 // ===== MAIN =====
 function main() {
   canvas = document.getElementById('webgl');
   gl = canvas.getContext('webgl');
 
-  if (!gl) {
-    console.log('WebGL not supported');
-    return;
-  }
+  if (!gl) return;
 
   initShaders();
   gl.enable(gl.DEPTH_TEST);
@@ -30,6 +37,22 @@ function main() {
   u_Color = gl.getUniformLocation(gl.program, 'u_Color');
 
   setupUI();
+
+  // Mouse rotation
+  canvas.onmousemove = function(ev) {
+    if (ev.buttons === 1) {
+      gMouseX = ev.clientX;
+      gAnimalGlobalRotation = gMouseX / 2;
+    }
+  };
+
+  // Poke animation
+  canvas.onmousedown = function(ev) {
+    if (ev.shiftKey) {
+      gPoke = true;
+      setTimeout(() => gPoke = false, 500);
+    }
+  };
 
   requestAnimationFrame(tick);
 }
@@ -72,21 +95,11 @@ function initShaders() {
 
 // ===== UI =====
 function setupUI() {
-  document.getElementById("rotSlider").oninput = (e) => {
-    gAnimalGlobalRotation = e.target.value;
-  };
-
-  document.getElementById("thighSlider").oninput = (e) => {
-    gThighAngle = e.target.value;
-  };
-
-  document.getElementById("calfSlider").oninput = (e) => {
-    gCalfAngle = e.target.value;
-  };
-
-  document.getElementById("tailSlider").oninput = (e) => {
-    gTailAngle = e.target.value;
-  };
+  document.getElementById("rotSlider").oninput = e => gAnimalGlobalRotation = e.target.value;
+  document.getElementById("thighSlider").oninput = e => gThighAngle = e.target.value;
+  document.getElementById("calfSlider").oninput = e => gCalfAngle = e.target.value;
+  document.getElementById("footSlider").oninput = e => gFootAngle = e.target.value;
+  document.getElementById("tailSlider").oninput = e => gTailAngle = e.target.value;
 }
 
 function toggleAnimation() {
@@ -98,13 +111,26 @@ function updateAnimationAngles() {
   if (gAnimate) {
     gThighAngle = 30 * Math.sin(g_seconds);
     gCalfAngle = 30 * Math.sin(g_seconds + 1);
-    gTailAngle = 45 * Math.sin(g_seconds);
+    gFootAngle = 20 * Math.sin(g_seconds + 2);
+    gTailAngle = 45 * Math.sin(g_seconds * 2);
+  }
+
+  if (gPoke) {
+    gThighAngle = 60;
+    gCalfAngle = -60;
+    gFootAngle = 30;
   }
 }
 
 // ===== LOOP =====
 function tick() {
   g_seconds = performance.now() / 1000.0;
+
+  // FPS
+  let now = performance.now();
+  let fps = 1000 / (now - g_lastFrameTime);
+  g_lastFrameTime = now;
+  document.getElementById("fps").innerText = fps.toFixed(1);
 
   updateAnimationAngles();
   renderScene();
@@ -114,13 +140,13 @@ function tick() {
 
 // ===== HELPER =====
 function renderCube(matrix, color) {
-  let cube = new Cube();
-  cube.color = color;
-  cube.matrix = matrix;
-  cube.render();
+  if (!gCube) gCube = new Cube();
+  gCube.matrix = matrix;
+  gCube.color = color;
+  gCube.render();
 }
 
-// ===== RENDER SCENE =====
+// ===== RENDER =====
 function renderScene() {
   gl.clearColor(0, 0, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -129,18 +155,40 @@ function renderScene() {
   globalRot.rotate(gAnimalGlobalRotation, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotation, false, globalRot.elements);
 
-  // ===== BODY =====
+  // BODY
   let body = new Matrix4();
   body.scale(0.6, 0.3, 0.3);
   renderCube(body, [0.6, 0.6, 0.6, 1]);
 
-  // ===== HEAD =====
+  // HEAD
   let head = new Matrix4(body);
-  head.translate(1.2, 0.3, 0);
-  head.scale(0.5, 0.5, 0.5);
-  renderCube(head, [0.7, 0.7, 0.7, 1]);
+  head.translate(0.75, 0.3, 0);
 
-  // ===== FRONT LEG (CHAIN) =====
+  let headBase = new Matrix4(head);
+
+  let headVisual = new Matrix4(head);
+  headVisual.scale(0.5, 0.8, 0.5);
+  renderCube(headVisual, [0.7, 0.7, 0.7, 1]);
+
+
+  // EYES (FIXED + EXAGGERATED OFFSET)
+  let leftEye = new Matrix4(headBase);
+  leftEye.translate(0.25, 0.25, 0.35); 
+  leftEye.scale(0.1, 0.1, 0.1);         
+  renderCube(leftEye, [0.0, 0.0, 0.0, 1]);
+
+  let rightEye = new Matrix4(headBase);
+  rightEye.translate(0.25, 0.25, -0.35);
+  rightEye.scale(0.1, 0.1, 0.1);
+  renderCube(rightEye, [0.0, 0.0, 0.0, 1]);
+
+    // ===== NOSE =====
+  let nose = new Matrix4(headBase);
+  nose.translate(0.28, 0.15, 0.0);
+  nose.scale(0.08, 0.08, 0.12);
+  renderCube(nose, [0.2, 0.2, 0.2, 1]);
+
+  // ===== FRONT LEG =====
   let thigh = new Matrix4();
   thigh.translate(0.3, -0.3, 0.2);
   thigh.rotate(gThighAngle, 1, 0, 0);
@@ -149,7 +197,6 @@ function renderScene() {
   thigh.scale(0.1, 0.3, 0.1);
   renderCube(thigh, [0.8, 0.5, 0.5, 1]);
 
-  // calf
   let calf = new Matrix4(thighSave);
   calf.translate(0, -0.3, 0);
   calf.rotate(gCalfAngle, 1, 0, 0);
@@ -158,11 +205,34 @@ function renderScene() {
   calf.scale(0.1, 0.3, 0.1);
   renderCube(calf, [0.8, 0.5, 0.5, 1]);
 
-  // foot (3rd level)
   let foot = new Matrix4(calfSave);
   foot.translate(0, -0.3, 0);
+  foot.rotate(gFootAngle, 1, 0, 0);
   foot.scale(0.15, 0.05, 0.2);
   renderCube(foot, [0.9, 0.4, 0.4, 1]);
+
+  // ===== BACK LEG =====
+  let thigh2 = new Matrix4();
+  thigh2.translate(-0.3, -0.3, 0.2);
+  thigh2.rotate(gThighAngle, 1, 0, 0);
+
+  let t2Save = new Matrix4(thigh2);
+  thigh2.scale(0.1, 0.3, 0.1);
+  renderCube(thigh2, [0.8, 0.5, 0.5, 1]);
+
+  let calf2 = new Matrix4(t2Save);
+  calf2.translate(0, -0.3, 0);
+  calf2.rotate(gCalfAngle, 1, 0, 0);
+
+  let c2Save = new Matrix4(calf2);
+  calf2.scale(0.1, 0.3, 0.1);
+  renderCube(calf2, [0.8, 0.5, 0.5, 1]);
+
+  let foot2 = new Matrix4(c2Save);
+  foot2.translate(0, -0.3, 0);
+  foot2.rotate(gFootAngle, 1, 0, 0);
+  foot2.scale(0.15, 0.05, 0.2);
+  renderCube(foot2, [0.9, 0.4, 0.4, 1]);
 
   // ===== TAIL =====
   let tail1 = new Matrix4();
@@ -170,6 +240,7 @@ function renderScene() {
   tail1.rotate(gTailAngle, 0, 0, 1);
 
   let t1Save = new Matrix4(tail1);
+  
   tail1.scale(0.3, 0.05, 0.05);
   renderCube(tail1, [0.5, 0.3, 0.3, 1]);
 
@@ -178,39 +249,4 @@ function renderScene() {
   tail2.rotate(gTailAngle * 0.5, 0, 0, 1);
   tail2.scale(0.3, 0.05, 0.05);
   renderCube(tail2, [0.5, 0.3, 0.3, 1]);
-
-  /*
-  ============================
-  STEP 11+ GUIDE
-  ============================
-
-  ADD MORE LEGS:
-  - Duplicate front leg code
-  - Change translate() position
-  - Add phase offset in animation
-
-  COLOR:
-  - You already pass color per cube
-  - Improve by making variables per body part
-
-  THIRD JOINT:
-  - Already done (foot)
-  - Could add toes or jaw
-
-  NON-CUBE:
-  - Create new class like Sphere or Cylinder
-  - Similar to Cube.js buffer logic
-
-  MOUSE ROTATION:
-  - Track mouse X/Y
-  - Update gAnimalGlobalRotation dynamically
-
-  POKE ANIMATION:
-  - Detect shift-click
-  - Temporarily override angles
-
-  PERFORMANCE:
-  - Reuse Cube objects instead of creating new each frame
-  - Move static objects outside render loop
-  */
 }
