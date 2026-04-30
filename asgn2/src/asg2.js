@@ -229,7 +229,7 @@ function renderScene() {
   nose.color = [0.85, 0.6, 0.6, 1]
 
   let noseM = new Matrix4(headBase);
-  noseM.translate(0, 0, 0.45);
+  noseM.translate(0.28, 0.15, 0);
   noseM.scale(0.08, 0.08, 0.12);
 
   nose.render(noseM);
