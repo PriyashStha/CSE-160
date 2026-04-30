@@ -4,65 +4,50 @@
   <meta charset="utf-8">
   <title>3D Rat</title>
 </head>
+
 <body onload="main()">
+
+  <!-- CANVAS -->
   <canvas id="webgl" width="600" height="600"></canvas>
+
   <br><br>
 
+  <!-- PERFORMANCE (useful for later step) -->
   <div>
-    <b>Frames Per Second:</b> <span id="fps">0</span><br>
-    <b>x:</b> <span id="mouseX">0</span>
-    <b>y:</b> <span id="mouseY">0</span>
+    <b>FPS:</b> <span id="fps">0</span>
   </div>
 
   <br>
 
-  <button onclick="clearCanvas()">Clear Canvas</button>
+  <!-- REQUIRED CONTROLS -->
+  <b>Global Rotation:</b><br>
+  <input type="range" min="0" max="360" value="0" id="rotSlider">
   <br><br>
 
-  <b>Set Obj:</b><br>
-  <input type="file" id="objFile">
-  <button onclick="addOBJ()">Add OBJ To Scene</button>
-
+  <b>Front Leg (Thigh):</b><br>
+  <input type="range" min="-60" max="60" value="0" id="thighSlider">
   <br><br>
 
-  <b>Drawing Mode:</b><br>
-  <button onclick="setMode('squares')">Spinning Squares</button>
-  <button onclick="setMode('triangles')">Fluctuating Triangles</button>
-  <button onclick="setMode('circles')">Moving Circles</button>
-  <button onclick="setMode('cube')">Tilted Cube</button>
-
+  <b>Front Leg (Calf):</b><br>
+  <input type="range" min="-60" max="60" value="0" id="calfSlider">
   <br><br>
 
-  <b>Shape Color:</b><br>
-  Red <input type="range" min="0" max="1" step="0.01" id="redSlider"><br>
-  Green <input type="range" min="0" max="1" step="0.01" id="greenSlider"><br>
-  Blue <input type="range" min="0" max="1" step="0.01" id="blueSlider"><br>
-
-  <br>
-
-  Shape Size <input type="range" min="0.1" max="2" step="0.1" id="sizeSlider"><br>
-  (Circles) Segment Count <input type="range" min="3" max="50" id="segmentSlider"><br>
-
+  <b>Tail:</b><br>
+  <input type="range" min="-45" max="45" value="0" id="tailSlider">
   <br><br>
 
-  <!-- EXISTING CONTROLS (keep for assignment) -->
-  Global Rotation:
-  <input type="range" min="0" max="360" value="0" id="rotSlider"><br>
-
-  Front Leg (Upper):
-  <input type="range" min="-60" max="60" value="0" id="thighSlider"><br>
-
-  Front Leg (Lower):
-  <input type="range" min="-60" max="60" value="0" id="calfSlider"><br>
-
-  Tail:
-  <input type="range" min="-45" max="45" value="0" id="tailSlider"><br>
-
+  <!-- ANIMATION BUTTON -->
   <button onclick="toggleAnimation()">Toggle Animation</button>
 
+  <br><br>
+
+  <!-- SCRIPTS -->
   <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
   <script src="../lib/cuon-utils.js"></script>
-  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/cuon-matrix-cse160.js"></script>
+  <script src="Cube.js"></script>
   <script src="asg2.js"></script>
+
 </body>
 </html>
