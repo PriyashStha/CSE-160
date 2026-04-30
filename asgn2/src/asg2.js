@@ -148,7 +148,7 @@ function drawCube(M, color) {
   gCube.render();
 }
 
-// ================= LEG (FIXED AXIS) =================
+// ================= LEG =================
 function leg(base, x, z, phase) {
 
   let hipY = -0.40;
@@ -156,8 +156,6 @@ function leg(base, x, z, phase) {
   // ===== THIGH =====
   let thigh = new Matrix4(base);
   thigh.translate(x, hipY, z);
-
-  // 🔥 FIX: Z-axis swing (forward/back walking motion)
   thigh.rotate(gThighAngle * phase, 0, 0, 1);
 
   let thighSave = new Matrix4(thigh);
@@ -170,7 +168,7 @@ function leg(base, x, z, phase) {
   let calf = new Matrix4(thighSave);
   calf.translate(0, -0.50, 0);
 
-  calf.rotate(gCalfAngle * phase, 0, 0, 1); // 🔥 FIXED
+  calf.rotate(gCalfAngle * phase, 0, 0, 1);
 
   let calfSave = new Matrix4(calf);
 
@@ -182,7 +180,7 @@ function leg(base, x, z, phase) {
   let foot = new Matrix4(calfSave);
   foot.translate(0, -0.35, 0);
 
-  foot.rotate(gFootAngle * phase, 0, 0, 1); // 🔥 FIXED
+  foot.rotate(gFootAngle * phase, 0, 0, 1);
 
   let footModel = new Matrix4(foot);
   footModel.scale(0.18, 0.06, 0.25);
